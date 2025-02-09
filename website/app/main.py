@@ -1,15 +1,17 @@
-from fastapi import FastAPI, Depends, HTTPException, APIRouter, status, Query, Header, Request, WebSocket, WebSocketDisconnect
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
-from .init import User, Chat
-from fastapi.responses import RedirectResponse
-from typing import Optional
-from . import crud, schemas
-from fastapi.templating import Jinja2Templates
-import bcrypt
-from jose import jwt
 from datetime import datetime, timedelta
+from typing import Optional
+
+import bcrypt
 import uvicorn
+from fastapi import FastAPI, Depends, HTTPException, APIRouter, status, Query, Request
+from fastapi.responses import RedirectResponse
+from fastapi.security import OAuth2PasswordBearer
+from fastapi.templating import Jinja2Templates
+from jose import jwt
+from sqlalchemy.orm import Session
+
+from website.app.init import User, Chat
+from . import crud, schemas
 from .utils import verify_password, get_db, get_current_user
 
 
@@ -172,5 +174,5 @@ async def get_ws(request: Request, chat_id: int, db: Session = Depends(get_db)):
     return templates.TemplateResponse("chat.html", {"request": request, "chat_id": chat_id})
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="127.0.0.1", port=8001)
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8001)
