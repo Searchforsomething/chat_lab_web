@@ -1,10 +1,11 @@
-from passlib.context import CryptContext
-from .init import User
 from fastapi import Depends, HTTPException, status
-from . import init
-from sqlalchemy.orm import Session
-from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+
+from . import init
+from .init import User
 
 
 # Hashing algorithm for passwords
@@ -17,6 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # Function to verify a hashed password
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
 
 def get_db():
     db = init.SessionLocal()
@@ -46,4 +48,3 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         return None
 
     return user
-
