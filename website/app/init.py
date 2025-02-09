@@ -13,8 +13,9 @@ Base = declarative_base()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 if not database_exists(engine.url):
-    # Создаем базу данных, если её нет
     create_database(engine.url)
+    
+    
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
