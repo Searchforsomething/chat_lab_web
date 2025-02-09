@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Login or Register{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form id="login-form">
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    <label>Password:</label>
+    <input type="password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+
+<h2>Register</h2>
+<form id="register-form">
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    <label>Password:</label>
+    <input type="password" name="password" required>
+    <button type="submit">Register</button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("register-form").addEventListener("submit", async (event) => {
+        event.preventDefault();  // Отключаем стандартную отправку формы
+
+        // Собираем данные формы
+        const form = event.target;
+        const data = {
+            email: form.email.value,
+            password: form.password.value,
+        };
+
+        try {
+            const response = await fetch("/register/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert("Registration successful");
+                form.reset();  // Очищаем форму после успешной регистрации
+            } else {
+                const errorData = await response.json();
+                alert("Error: " + (errorData.detail || "Registration failed"));
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error: Unable to process registration.");
+        }
+    });
+});
+
+document.getElementById("login-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const data = {
+        email: form.email.value,
+        password: form.password.value,
+    };
+
+    const response = await fetch("/login/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+        location.reload()
+        alert("Login successful");
+        localStorage.setItem("access_token", result.access_token);
+
+                    // Перенаправляем пользователя на домашнюю страницу
+        window.location.href = "/home";
+
+    } else {
+        const errorData = await response.json();
+        alert("Error: " + errorData.detail);
+    }
+});
+</script>
+{% endblock %}
+

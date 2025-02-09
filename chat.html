@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}my chats{% endblock %}
+
+{% block content %}
+
+<body>
+    <h1>Чат #{{chat_id}}</h1>
+    <form id="form">
+        <input type="text" id="messageText" autocomplete="off" />
+        <button>Отправить</button>
+    </form>
+
+    <ul id="messages"></ul>
+
+    <script>
+        const token = document.cookie
+        .split('token=')[1];
+        console.log(token)
+
+        const ws = new WebSocket(`ws://0.0.0.0:8000/ws/{{chat_id}}?token=${token}`);
+        var form = document.getElementById('form');
+        var input = document.getElementById('messageText');
+        var messages = document.getElementById('messages');
+
+        ws.onopen = function (event) {
+            var messageItem = document.createElement('div');
+            messageItem.classList.add('success');
+            messageItem.textContent = 'WebSocket connection opened';
+            messages.appendChild(messageItem);
+        };
+
+        ws.onmessage = function (event) {
+            var messageItem = document.createElement('div');
+            if (event.data instanceof Blob) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    messageItem.textContent = reader.result;
+                };
+                reader.readAsText(event.data);
+            } else {
+                messageItem.textContent = event.data;
+            }
+            messages.appendChild(messageItem);c
+        };
+
+        ws.onclose = function (event) {
+            var messageItem = document.createElement('div');
+            messageItem.classList.add('error');
+            messageItem.textContent = 'WebSocket connection closed';
+            messages.appendChild(messageItem);
+        };
+
+        ws.onerror = function (event) {
+            var messageItem = document.createElement('div');
+            messageItem.classList.add('error');
+            messageItem.textContent = 'WebSocket error occurred';
+            messages.appendChild(messageItem);
+        };
+
+        form.onsubmit = function (event) {
+            event.preventDefault();
+            if (input.value !== '') {
+                ws.send(input.value);
+                input.value = '';
+            }
+        };
+
+    </script>
+
+{% endblock %}

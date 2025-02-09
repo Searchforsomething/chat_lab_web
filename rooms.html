@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}my chats{% endblock %}
+
+{% block content %}
+    <h1>All Rooms</h1>
+
+    <!-- Форма для поиска комнат -->
+    <form id="search-form">
+        <label for="search">Search Rooms:</label>
+        <input type="text" id="search" name="search" placeholder="Enter room name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Открытые чаты</h2>
+    <ul>
+        {% for room in rooms %}
+            <li>
+                <a href="/ws/{{ room.id }}">{{ room.name }}</a> <!-- Ссылка на комнату -->
+            </li>
+        {% else %}
+            <li>Ничего не нашли:(</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Домой</a>
+
+
+<script>
+document.getElementById("search-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const data = {
+        name: form.search.value,
+    };
+
+    response = await fetch(`/rooms?search=${form.search.value}`, {
+    method: "GET",
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
+
+    if (response.ok) {
+        window.location.href = `/rooms?search=${form.search.value}`;
+    } else {
+        alert("Ошибка при поиске");
+    }
+});
+</script>
+
+{% endblock %}

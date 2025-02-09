@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}my chats{% endblock %}
+
+{% block content %}
+<h2>Создать чат-комнату</h2>
+
+    <form id="new-chat">
+        <label for="chat_name">Имя комнаты:</label>
+        <input type="text" id="chat_name" name="name" required>
+        <button type="submit">Добавить!</button>
+    </form>
+
+    <h2>Мои чаты</h2>
+    <ul>
+        {% for room in rooms %}
+            <li>
+                <a href="/ws/{{ room.id }}">{{ room.name }}</a>
+                <form method="POST" action="/my-chats/delete/{{ room.id }}" style="display:inline;">
+                    <button type="submit">Удалить чат</button>
+                </form>
+            </li>
+        {% else %}
+            <li>Ничего не нашли:(</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Домой</a>
+
+<script>
+document.getElementById("new-chat").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const data = {
+        name: form.name.value,
+    };
+
+    const response = await fetch("/my-chats/add/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+        location.reload()
+        alert("Чат добавлен!");
+        }});
+</script>
+{% endblock %}
