@@ -1,8 +1,8 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from typing import List
-import uvicorn
-from jose import jwt
 import logging
+from typing import List
+
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from jose import jwt
 
 app = FastAPI()
 
