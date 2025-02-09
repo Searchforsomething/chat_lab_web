@@ -1,7 +1,4 @@
 from pydantic import BaseModel
-from typing import List
-
-# Схемы
 
 
 class UserBase(BaseModel):
